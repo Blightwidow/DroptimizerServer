@@ -4,10 +4,10 @@ WORKDIR /app
 
 RUN apk update && apk add python
 
-COPY ./Droptimizer/package.json ./Droptimizer/yarn.lock ./
+COPY ./package.json ./yarn.lock ./
 RUN yarn install --pure-lockfile --network-timeout 600000
 
-COPY ./Droptimizer/ ./
+COPY ./ ./
 
 EXPOSE 3000
 
