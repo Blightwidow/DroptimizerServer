@@ -60,6 +60,8 @@ async function updateCharacter(charName) {
     );
 
     console.log(`Updated character: ${charName}`);
+
+    return;
   } catch (e) {
     console.error(`Error updating ${charName}`, e);
   }
@@ -107,39 +109,22 @@ async function runSim(charName) {
       });
       setTimeout(async function () {
         // let raidbots have 3 secs to set up the page
-        // select BoD
+        // select Raid
         await page
           .click(
-            "#app > div > div.Container > section > section > div:nth-child(2) > section > div:nth-child(3) > div:nth-child(2) > div:nth-child(2) > div > div:nth-child(3) > div"
+            "section.Section:nth-child(3) > section:nth-child(1) > div:nth-child(2) > section:nth-child(1) > div:nth-child(3) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1)"
           )
           .catch((e) => {
             console.error(e);
           });
-        // select mythic
+        // select Tier
         await page
           .click(
-            "#app > div > div.Container > section > section > div:nth-child(2) > section > div:nth-child(3) > div:nth-child(2) > div:nth-child(3) > div > div > div:nth-child(4)"
+            "section.Section:nth-child(3) > section:nth-child(1) > div:nth-child(2) > section:nth-child(1) > div:nth-child(3) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(3)"
           )
           .catch((e) => {
             console.error(e);
           });
-        // select 415 TF
-        await page
-          .click(
-            "#app > div > div.Container > section > section > div:nth-child(2) > section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div > div > div:nth-child(1)"
-          )
-          .catch((e) => {
-            console.error(e);
-          });
-        // set reorigination array stacks to 0
-        // open sim options
-        //await page.click('#app > div > div.Container > section > section > div > section > div:nth-child(5) > div > label > div > div:nth-child(1) > div > div:nth-child(2)').catch((e) => { console.error(e);
-        // click the array stacks drop down
-        //await page.click('#app > div > div.Container > section > section > div > section > div:nth-child(5) > div > div > div > div:nth-child(4) > div > div > div > div > div > select').catch((e) => { console.error(e);
-        // press down arrow to select 0 from dropdown
-        //await page.keyboard.press('ArrowDown').catch((e) => { console.error(e);
-        // press enter to confirm selection
-        //await page.keyboard.press('Enter').catch((e) => { console.error(e);
         // start the sim, twice bc it doesnt work otherwise
         await page
           .click(
@@ -148,7 +133,6 @@ async function runSim(charName) {
           .catch((e) => {
             console.error(e);
           });
-        //await page.click('#app > div > div.Container > section > section > div > section > div:nth-child(11) > div > div:nth-child(1) > button').catch((e) => { console.error(e);
         await page.waitForNavigation().catch((e) => {
           console.error(e);
         });
@@ -159,6 +143,7 @@ async function runSim(charName) {
         await browser.close().catch((e) => {
           console.error(e);
         });
+        console.log(`Queued new sim with ID: ${reportID} `);
         setTimeout(function () {
           // let raidbots have 10 mins to process the sim
           updateSimReport(reportID);
@@ -313,7 +298,9 @@ async function initData() {
     });
     blizzardToken = response.data.access_token;
 
-    updateCharacter("odrel");
+    await updateCharacter("odrel");
+
+    runAllSims();
   } catch (e) {
     console.error(e);
   }
