@@ -27,7 +27,7 @@ async function getCharacterByName(charName) {
 }
 
 async function upsertCharacter(name, lastModified, classId) {
-  const user = getCharacterByName(name);
+  const user = await getCharacterByName(name);
 
   return new Promise((resolve, reject) => {
     db.run(
