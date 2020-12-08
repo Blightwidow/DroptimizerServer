@@ -24,7 +24,7 @@ async function updateAllCharacters() {
   try {
     logger.debug("[Character] ", `Updating all character`);
 
-    const users = database.getAllCharacters();
+    const users = await database.getAllCharacters();
 
     return Promise.all(users.map((user) => updateCharacter(user.name)));
   } catch (e) {
