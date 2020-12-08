@@ -9,7 +9,7 @@ async function updateItems() {
 
     const items = await raidbots.getAllItems();
 
-    // await database.upsertItems(items);
+    await database.upsertItems(items);
     logger.info("[Items] ", `${items.length} items updated`);
   } catch (e) {
     logger.error("[Items] ", e);
