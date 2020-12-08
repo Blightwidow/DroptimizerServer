@@ -60,7 +60,7 @@ async function getItemsById(itemID) {
 }
 
 async function upsertItems(items) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     db.run("BEGIN TRANSACTION;");
     for (let i = 0; i < items.length; i++) {
       const sql =
@@ -74,8 +74,13 @@ async function upsertItems(items) {
       ];
       db.run(sql, params);
     }
-    db.run("COMMIT TRANSACTION;");
-    resolve();
+    db.run("COMMIT;", (err) => {
+      if (err) {
+        return reject(err);
+      }
+
+      resolve();
+    });
   });
 }
 

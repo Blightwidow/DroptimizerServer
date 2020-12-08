@@ -1,14 +1,17 @@
 const cron = require("node-cron");
 
-const { logger } = require('./logger');
-const { updateAllCharacters, updateCharacter } = require('./handlers/character');
-const { runAllSims } = require('./handlers/simulation');
-const { updateAllItems } = require('./handlers/items');
+const { logger } = require("./logger");
+const {
+  updateAllCharacters,
+  updateCharacter,
+} = require("./handlers/character");
+const { runAllSims } = require("./handlers/simulation");
+const { updateItems } = require("./handlers/items");
 
 async function initData() {
   try {
     await updateCharacter("Odrel");
-    // await updateItems();
+    await updateItems();
     runAllSims();
   } catch (e) {
     logger.error("[Data] ", e);
@@ -44,7 +47,7 @@ function initCrons() {
     function () {
       logger.warn("[CRON] ", "Updating items");
 
-      updateAllItems();
+      updateItems();
     },
     { timezone: process.env.TIMEZONE }
   );
