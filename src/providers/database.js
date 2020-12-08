@@ -121,15 +121,6 @@ async function getUpgradeByItem(charName, itemID) {
 function upsertUpgrade(charID, result, baseDps, reportID, spec, timeStamp) {
   const nameParts = result.name.split("/");
   const itemID = nameParts[3];
-  console.log(
-    "[Upgrade] ",
-    charID,
-    result.mean,
-    baseDps,
-    reportID,
-    spec,
-    timeStamp
-  );
 
   return new Promise((resolve, reject) => {
     db.run(
