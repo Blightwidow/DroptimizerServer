@@ -2,14 +2,14 @@ require("dotenv").config();
 const createError = require("http-errors");
 const express = require("express");
 const cookieParser = require("cookie-parser");
-const logger = require("morgan");
 
 const characterRoutes = require("./src/routes/character");
 const upgradeRoutes = require("./src/routes/upgrade");
 const itemRoutes = require("./src/routes/item");
 const updateRoutes = require("./src/routes/update");
-const { initCrons, initData } = require("./src/dataUpdater");
+const { initCrons, initData } = require("./src/cron");
 const { initDatabase } = require("./src/database");
+const { logger } = require('./src/logger');
 
 // App init
 initDatabase();
@@ -17,10 +17,14 @@ initData();
 initCrons();
 const app = express();
 
-app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.use((req, res, next) => {
+  logger.info("[Express] ",req.method, ' ', req.path)
+  next();
+});
 
 app.use((req, res, next) => {
   res.set(
@@ -63,7 +67,7 @@ app.use(function (err, req, res) {
 });
 
 process.on("uncaughtException", function (err) {
-  console.log("Uncaught exception: " + err);
+  logger.error("[Express] ", "Uncaught exception: " + err);
 
   process.exit(1);
 });

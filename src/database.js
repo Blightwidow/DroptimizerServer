@@ -1,11 +1,14 @@
 const sqlite3 = require("sqlite3");
 
+const { logger } = require("./logger");
+
 const dbFilePath = "./data.db";
 const db = new sqlite3.Database(dbFilePath, (err) => {
   if (err) {
-    console.error(err.message);
+    logger.error("[DB] ", err.message);
+  } else {
+    logger.info("[DB] ", "Connected to the database.");
   }
-  console.log("Connected to the database.");
 });
 
 function initDatabase() {
