@@ -68,11 +68,15 @@ async function upsertItems(items) {
       const params = [
         items[i].id,
         items[i].name,
-        items[i].icon,
+        items[i].icon || '',
         items[i].quality,
         items[i].itemLevel,
       ];
-      db.run(sql, params);
+      db.run(sql, params, (err) => {
+        if (err) {
+          return reject(err);
+        }
+      });
     }
     db.run("COMMIT;", (err) => {
       if (err) {
