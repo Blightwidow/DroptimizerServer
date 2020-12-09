@@ -1,19 +1,13 @@
 const cron = require("node-cron");
 
 const { logger } = require("./logger");
-const {
-  updateAllCharacters,
-  updateCharacter,
-} = require("./handlers/character");
+const { updateAllCharacters } = require("./handlers/character");
 const { runAllSims } = require("./handlers/simulation");
 const { updateItems } = require("./handlers/items");
 
 async function initData() {
   try {
-    await updateCharacter("Odrel");
-    await updateCharacter("Odreal");
     await updateItems();
-    runAllSims();
   } catch (e) {
     logger.error("[Data] ", e);
   }
