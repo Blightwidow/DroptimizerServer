@@ -11,6 +11,7 @@ const { updateItems } = require("./handlers/items");
 async function initData() {
   try {
     await updateCharacter("Odrel");
+    await updateCharacter("Odreal");
     await updateItems();
     runAllSims();
   } catch (e) {

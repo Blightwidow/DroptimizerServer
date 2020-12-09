@@ -48,6 +48,22 @@ async function upsertCharacter(name, lastModified, classId) {
   });
 }
 
+async function deleteCharacterByName(name) {
+  return new Promise((resolve, reject) => {
+    db.run(
+      `DELETE FROM characters WHERE name = ? COLLATE NOCASE;`,
+      [name],
+      (err, rows) => {
+        if (err) {
+          return reject(err);
+        }
+
+        resolve(rows);
+      }
+    );
+  });
+}
+
 async function getItemsById(itemID) {
   return new Promise((resolve, reject) => {
     db.get("SELECT * FROM items WHERE id=?;", [itemID], (err, rows) => {
@@ -68,7 +84,7 @@ async function upsertItems(items) {
       const params = [
         items[i].id,
         items[i].name,
-        items[i].icon || '',
+        items[i].icon || "",
         items[i].quality,
         items[i].itemLevel,
       ];
@@ -163,6 +179,7 @@ module.exports = {
   getAllCharacters,
   getCharacterByName,
   upsertCharacter,
+  deleteCharacterByName,
   // Items
   getItemsById,
   upsertItems,
