@@ -1,18 +1,19 @@
-const request = require("request");
-const blizzard = require("blizzard.js").initialize({
+import request from "request";
+import blizzard from "blizzard.js";
+
+import logger  from "../logger.js";
+
+let blizzardToken = "";
+const client = blizzard.initialize({
   key: process.env.WOW_API_CLIENTID,
   secret: process.env.WOW_API_CLIENTSECRET,
   origin: process.env.WOW_API_ORIGIN,
 });
 
-const { logger } = require("../logger");
-
-let blizzardToken = "";
-
 async function getToken() {
   if (blizzardToken) return blizzardToken;
 
-  const response = await blizzard.getApplicationToken({
+  const response = await client.getApplicationToken({
     key: process.env.WOW_API_CLIENTID,
     secret: process.env.WOW_API_CLIENTSECRET,
     origin: process.env.WOW_API_REGION,
@@ -23,7 +24,7 @@ async function getToken() {
   return blizzardToken;
 }
 
-async function getCharacterData(charName) {
+export async function getCharacterData(charName) {
   const token = await getToken();
 
   return new Promise((resolve, reject) => {
@@ -41,12 +42,8 @@ async function getCharacterData(charName) {
           return resolve(report);
         }
 
-        reject(error, response.statusCode)
+        reject(error, response.statusCode);
       }
     );
   });
 }
-
-module.exports = {
-  getCharacterData,
-};

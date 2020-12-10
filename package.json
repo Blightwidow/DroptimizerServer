@@ -7,6 +7,10 @@
     "dev": "nodemon ./bin/www",
     "lint": "eslint ./src"
   },
+  "type": "module",
+  "engines": {
+    "node": ">=13.0.0"
+  },
   "dependencies": {
     "blizzard.js": "^3.2.0",
     "cookie-parser": "^1.4.5",
@@ -18,6 +22,7 @@
     "node-cron": "^2.0.3",
     "puppeteer": "^3.0.0",
     "simple-node-logger": "^18.12.24",
+    "sqlite": "^4.0.18",
     "sqlite3": "^4.1.1",
     "tinyqueue": "^2.0.3"
   },

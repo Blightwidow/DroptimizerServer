@@ -1,8 +1,8 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
 
-const { logger } = require("../logger");
-const databaseProvider = require("../providers/database");
+import logger from "../logger.js";
+import * as databaseProvider from "../providers/database.js";
 
 // gets all characters
 router.get("/$", async function (req, res) {
@@ -49,4 +49,4 @@ router.delete("/:name", async function (req, res) {
   }
 });
 
-module.exports = router;
+export default router;

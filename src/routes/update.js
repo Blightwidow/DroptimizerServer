@@ -1,7 +1,7 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
 
-const { updateSimReport } = require("../handlers/simulation");
+import { updateSimReport } from "../handlers/simulation.js";
 
 // express routes
 router.get("/report/:reportID", async function (req, res) {
@@ -9,4 +9,4 @@ router.get("/report/:reportID", async function (req, res) {
   res.json(`Parsing report with id ${req.params.reportID}`);
 });
 
-module.exports = router;
+export default router;

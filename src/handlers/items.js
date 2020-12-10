@@ -1,21 +1,17 @@
-const { logger } = require("../logger");
-const raidbots = require("../providers/raidbots");
-const database = require("../providers/database");
+import logger from "../logger.js";
+import * as databaseProvider from "../providers/database.js";
+import * as raidbotsProvider from "../providers/raidbots.js";
 
 // updates item database with data from raidbots
-async function updateItems() {
+export async function updateItems() {
   try {
     logger.debug("[Items] ", "Updating all items");
 
-    const items = await raidbots.getAllItems();
+    const items = await raidbotsProvider.getAllItems();
 
-    await database.upsertItems(items);
+    await databaseProvider.upsertItems(items);
     logger.info("[Items] ", `${items.length} items updated`);
   } catch (e) {
     logger.error("[Items] ", e);
   }
 }
-
-module.exports = {
-  updateItems,
-};

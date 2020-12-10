@@ -1,8 +1,8 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
 
-const { logger } = require("../logger");
-const databaseProvider = require("../providers/database");
+import logger  from "../logger.js";
+import * as databaseProvider from "../providers/database.js";
 
 // gets an itme by id
 router.get("/:itemID", async function (req, res) {
@@ -15,4 +15,4 @@ router.get("/:itemID", async function (req, res) {
   }
 });
 
-module.exports = router;
+export default router;

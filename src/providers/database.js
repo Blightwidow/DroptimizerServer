@@ -1,146 +1,100 @@
-const { db } = require("../database");
+import { getDb } from "../database.js";
 
-async function getAllCharacters() {
-  return new Promise((resolve, reject) => {
-    db.all("SELECT * FROM characters;", [], (err, rows) => {
-      if (err) {
-        return reject(err);
-      }
-      resolve(rows);
-    });
-  });
+export async function getAllCharacters() {
+  const db = await getDb();
+
+  return db.all("SELECT * FROM characters;");
 }
 
-async function getCharacterByName(charName) {
-  return new Promise((resolve, reject) => {
-    db.get(
-      "SELECT * FROM characters WHERE name=? COLLATE NOCASE;",
-      [charName],
-      (err, rows) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve(rows);
-      }
-    );
-  });
+export async function getCharacterByName(charName) {
+  const db = await getDb();
+
+  return db.get("SELECT * FROM characters WHERE name=? COLLATE NOCASE;", [
+    charName,
+  ]);
 }
 
-async function upsertCharacter(name, lastModified, classId) {
+export async function upsertCharacter(name, lastModified, classId) {
   const user = await getCharacterByName(name);
+  const db = await getDb();
 
-  return new Promise((resolve, reject) => {
-    db.run(
-      `INSERT OR REPLACE INTO characters(
+  return db.run(
+    `INSERT OR REPLACE INTO characters(
         id,
         lastModified,
         name,
         class,
         thumbnail) VALUES(?, ?, ?, ?, ?);`,
-      [user ? user.id : null, lastModified, name, classId, "thumbnail"],
-      (err, rows) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve(rows);
-      }
-    );
-  });
+    [user ? user.id : null, lastModified, name, classId, "thumbnail"]
+  );
 }
 
-async function deleteCharacterByName(name) {
-  return new Promise((resolve, reject) => {
-    db.run(
-      `DELETE FROM characters WHERE name = ? COLLATE NOCASE;`,
-      [name],
-      (err, rows) => {
-        if (err) {
-          return reject(err);
-        }
+export async function deleteCharacterByName(charName) {
+  const db = await getDb();
 
-        resolve(rows);
-      }
-    );
-  });
+  return db.run(`DELETE FROM characters WHERE name = ? COLLATE NOCASE;`, [
+    charName,
+  ]);
 }
 
-async function getItemsById(itemID) {
-  return new Promise((resolve, reject) => {
-    db.get("SELECT * FROM items WHERE id=?;", [itemID], (err, rows) => {
-      if (err) {
-        return reject(err);
-      }
-      resolve(rows);
-    });
-  });
+export async function getItemsById(itemID) {
+  const db = await getDb();
+
+  return db.get("SELECT * FROM items WHERE id=?;", [itemID]);
 }
 
-async function upsertItems(items) {
-  return new Promise((resolve, reject) => {
-    db.run("BEGIN TRANSACTION;");
-    for (let i = 0; i < items.length; i++) {
-      const sql =
-        "INSERT OR REPLACE INTO items(id, name, icon, quality, itemLevel) VALUES (?, ?, ?, ?, ?);";
-      const params = [
-        items[i].id,
-        items[i].name,
-        items[i].icon || "",
-        items[i].quality,
-        items[i].itemLevel,
-      ];
-      db.run(sql, params, (err) => {
-        if (err) {
-          return reject(err);
-        }
-      });
-    }
-    db.run("COMMIT;", (err) => {
-      if (err) {
-        return reject(err);
-      }
+export async function upsertItems(items) {
+  const db = await getDb();
 
-      resolve();
-    });
-  });
+  await db.run("BEGIN TRANSACTION;");
+  for (let i = 0; i < items.length; i++) {
+    const sql =
+      "INSERT OR REPLACE INTO items(id, name, icon, quality, itemLevel) VALUES (?, ?, ?, ?, ?);";
+    const params = [
+      items[i].id,
+      items[i].name,
+      items[i].icon || "",
+      items[i].quality,
+      items[i].itemLevel,
+    ];
+    db.run(sql, params);
+  }
+  return db.run("COMMIT;");
 }
 
-async function getAllUpgrades() {
-  return new Promise((resolve, reject) => {
-    db.all("SELECT * FROM upgrades;", [], (err, rows) => {
-      if (err) {
-        return reject(err);
-      }
-      resolve(rows);
-    });
-  });
+export async function getAllUpgrades() {
+  const db = await getDb();
+
+  return db.all("SELECT * FROM upgrades;");
 }
 
-async function getUpgradeByItem(charName, itemID) {
-  return new Promise((resolve, reject) => {
-    db.get(
-      `SELECT *
+export async function getUpgradeByItem(charName, itemID) {
+  const db = await getDb();
+
+  return db.get(
+    `SELECT *
     FROM upgrades
     JOIN characters ON upgrades.characterID = characters.id
     WHERE characters.name=? COLLATE NOCASE
     AND upgrades.itemID=?;`,
-      [charName, itemID],
-      (err, rows) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve(rows);
-      }
-    );
-  });
+    [charName, itemID]
+  );
 }
 
-function upsertUpgrade(charID, result, baseDps, reportID, spec, timeStamp) {
+export async function upsertUpgrade(
+  charID,
+  result,
+  baseDps,
+  reportID,
+  spec,
+  timeStamp
+) {
   const nameParts = result.name.split("/");
   const itemID = nameParts[3];
+  const db = await getDb();
 
-  return new Promise((resolve, reject) => {
-    db.run(
-      `INSERT OR REPLACE INTO upgrades(
+  return db.run(
+    `INSERT OR REPLACE INTO upgrades(
           characterID,
           itemID,
           reportID,
@@ -148,44 +102,15 @@ function upsertUpgrade(charID, result, baseDps, reportID, spec, timeStamp) {
           baseDps,
           spec,
           timeStamp) VALUES(?, ?, ?, ?, ?, ?, ?);`,
-      [charID, itemID, reportID, result.mean, baseDps.mean, spec, timeStamp],
-      (err, rows) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve(rows);
-      }
-    );
-  });
+    [charID, itemID, reportID, result.mean, baseDps.mean, spec, timeStamp]
+  );
 }
 
-async function deleteUpgradeByName(charName) {
-  return new Promise((resolve, reject) => {
-    db.run(
-      "DELETE FROM upgrades WHERE characterID = (SELECT id FROM characters WHERE name = ?);",
-      [charName],
-      (err, rows) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve(rows);
-      }
-    );
-  });
-}
+export async function deleteUpgradeByName(charName) {
+  const db = await getDb();
 
-module.exports = {
-  // Characters
-  getAllCharacters,
-  getCharacterByName,
-  upsertCharacter,
-  deleteCharacterByName,
-  // Items
-  getItemsById,
-  upsertItems,
-  // Upgrades
-  getAllUpgrades,
-  getUpgradeByItem,
-  upsertUpgrade,
-  deleteUpgradeByName,
-};
+  return db.run(
+    "DELETE FROM upgrades WHERE characterID = (SELECT id FROM characters WHERE name = ?);",
+    [charName]
+  );
+}

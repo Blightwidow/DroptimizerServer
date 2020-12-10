@@ -1,18 +1,37 @@
-const sqlite3 = require("sqlite3");
+import sqlite3 from "sqlite3";
+import { open } from "sqlite";
 
-const { logger } = require("./logger");
+import logger  from "./logger.js";
 
 const dbFilePath = "./data.db";
-const db = new sqlite3.Database(dbFilePath, (err) => {
-  if (err) {
-    logger.error("[DB] ", err.message);
-  } else {
-    logger.info("[DB] ", "Connected to the database.");
-  }
-});
+let db;
 
-function initDatabase() {
-  db.run(`CREATE TABLE IF NOT EXISTS characters (
+export async function openDb() {
+  try {
+    db = await open({
+      filename: dbFilePath,
+      driver: sqlite3.cached.Database,
+    });
+
+    logger.info("[DB] ", "Connected to the database.");
+    return db;
+  } catch (error) {
+    logger.error("[DB] ", error);
+  }
+}
+
+export async function getDb() {
+  if (db) {
+    return db;
+  }
+
+  return openDb();
+}
+
+export async function initDatabase() {
+  const db = await getDb();
+
+  await db.run(`CREATE TABLE IF NOT EXISTS characters (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             lastModified INTEGER NOT NULL,
             name TEXT UNIQUE NOT NULL,
@@ -20,7 +39,7 @@ function initDatabase() {
             thumbnail TEXT NOT NULL
         );`);
 
-  db.run(`CREATE TABLE IF NOT EXISTS items (
+  await db.run(`CREATE TABLE IF NOT EXISTS items (
             id INTEGER PRIMARY KEY NOT NULL,
             name TEXT NOT NULL,
             icon TEXT NOT NULL,
@@ -28,7 +47,7 @@ function initDatabase() {
             itemLevel INTEGER NOT NULL
         );`);
 
-  db.run(`CREATE TABLE IF NOT EXISTS upgrades (
+  await db.run(`CREATE TABLE IF NOT EXISTS upgrades (
             characterID INTEGER NOT NULL,
             itemID INTEGER NOT NULL,
             reportID TEXT NOT NULL,
@@ -40,8 +59,3 @@ function initDatabase() {
             CONSTRAINT fk_itemID FOREIGN KEY (itemID) REFERENCES items(id) ON DELETE CASCADE
         );`);
 }
-
-module.exports = {
-  db,
-  initDatabase,
-};

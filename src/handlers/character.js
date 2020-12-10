@@ -1,14 +1,14 @@
-const { logger } = require("../logger");
-const blizzard = require("../providers/blizzard");
-const database = require("../providers/database");
+import logger from "../logger.js";
+import * as databaseProvider from "../providers/database.js";
+import * as blizzardProvider from "../providers/blizzard.js";
 
 // updates/adds a character in/to the database with new data from battle.net
-async function updateCharacter(charName) {
+export async function updateCharacter(charName) {
   try {
     logger.debug("[Character] ", `Updating character: ${charName}`);
-    const data = await blizzard.getCharacterData(charName);
+    const data = await blizzardProvider.getCharacterData(charName);
 
-    await database.upsertCharacter(
+    await databaseProvider.upsertCharacter(
       data.name,
       data.last_login_timestamp,
       data.character_class.id
@@ -20,19 +20,14 @@ async function updateCharacter(charName) {
 }
 
 // updates every character in the database with new data from battle.net
-async function updateAllCharacters() {
+export async function updateAllCharacters() {
   try {
     logger.debug("[Character] ", `Updating all character`);
 
-    const users = await database.getAllCharacters();
+    const users = await databaseProvider.getAllCharacters();
 
     return Promise.all(users.map((user) => updateCharacter(user.name)));
   } catch (e) {
     logger.error("[Character] ", `Error updating all users `, e);
   }
 }
-
-module.exports = {
-  updateAllCharacters,
-  updateCharacter,
-};

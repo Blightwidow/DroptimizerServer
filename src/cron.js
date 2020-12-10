@@ -1,11 +1,11 @@
-const cron = require("node-cron");
+import cron from "node-cron";
 
-const { logger } = require("./logger");
-const { updateAllCharacters } = require("./handlers/character");
-const { runAllSims } = require("./handlers/simulation");
-const { updateItems } = require("./handlers/items");
+import logger  from "./logger.js";
+import { updateAllCharacters } from "./handlers/character.js";
+import { runAllSims } from "./handlers/simulation.js";
+import { updateItems } from "./handlers/items.js";
 
-async function initData() {
+export async function initData() {
   try {
     await updateItems();
   } catch (e) {
@@ -13,7 +13,7 @@ async function initData() {
   }
 }
 
-function initCrons() {
+export function initCrons() {
   // update all characters every hour with new data from battle.net
   cron.schedule(
     "0 * * * *",
@@ -47,8 +47,3 @@ function initCrons() {
     { timezone: process.env.TIMEZONE }
   );
 }
-
-module.exports = {
-  initData,
-  initCrons,
-};

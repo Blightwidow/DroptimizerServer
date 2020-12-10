@@ -1,7 +1,7 @@
-const request = require("request");
-const puppeteer = require("puppeteer");
+import request from "request";
+import puppeteer from "puppeteer";
 
-async function getAllItems() {
+export async function getAllItems() {
   return new Promise((resolve, reject) => {
     request.get(
       "https://www.raidbots.com/static/data/live/equippable-items.json",
@@ -18,7 +18,7 @@ async function getAllItems() {
   });
 }
 
-async function getNewSimId(charName) {
+export async function getNewSimId(charName) {
   const uri = `https://www.raidbots.com/simbot/droptimizer?region=${process.env.WOW_API_REGION}&realm=${process.env.WOW_API_REALM}&name=${charName}`;
   const cookies = [
     {
@@ -74,7 +74,7 @@ async function getNewSimId(charName) {
   throw new Error("No browser found provided");
 }
 
-async function getSimReport(reportID) {
+export async function getSimReport(reportID) {
   return new Promise((resolve, reject) => {
     request.get(
       `https://www.raidbots.com/reports/${reportID}/data.json`,
@@ -91,9 +91,3 @@ async function getSimReport(reportID) {
     );
   });
 }
-
-module.exports = {
-  getAllItems,
-  getNewSimId,
-  getSimReport,
-};

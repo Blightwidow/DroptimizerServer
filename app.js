@@ -1,15 +1,16 @@
-require("dotenv").config();
-const createError = require("http-errors");
-const express = require("express");
-const cookieParser = require("cookie-parser");
+import createError from "http-errors";
+import express from "express";
+import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
+dotenv.config();
 
-const characterRoutes = require("./src/routes/character");
-const upgradeRoutes = require("./src/routes/upgrade");
-const itemRoutes = require("./src/routes/item");
-const updateRoutes = require("./src/routes/update");
-const { initCrons, initData } = require("./src/cron");
-const { initDatabase } = require("./src/database");
-const { logger } = require('./src/logger');
+import characterRoutes from "./src/routes/character.js";
+import upgradeRoutes from "./src/routes/upgrade.js";
+import itemRoutes from "./src/routes/item.js";
+import updateRoutes from "./src/routes/update.js";
+import { initCrons, initData } from "./src/cron.js";
+import { initDatabase } from "./src/database.js";
+import logger  from "./src/logger.js";
 
 // App init
 initDatabase();
@@ -22,7 +23,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use((req, res, next) => {
-  logger.debug("[Express] ",req.method, ' ', req.path)
+  logger.debug("[Express] ", req.method, " ", req.path);
   next();
 });
 
@@ -72,4 +73,4 @@ process.on("uncaughtException", function (err) {
   process.exit(1);
 });
 
-module.exports = app;
+export default app;

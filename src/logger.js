@@ -1,7 +1,6 @@
-const logger = require("simple-node-logger").createSimpleLogger();
+import logger from "simple-node-logger";
 
-logger.setLevel(process.env.LOGGER_LEVEL || 'info');
+const instance = logger.createSimpleLogger();
+instance.setLevel(process.env.LOGGER_LEVEL || "info");
 
-module.exports = {
-  logger,
-};
+export default instance;
