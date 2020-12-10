@@ -57,7 +57,7 @@ export async function upsertItems(items) {
       items[i].quality,
       items[i].itemLevel,
     ];
-    db.run(sql, params);
+    await db.run(sql, params);
   }
   return db.run("COMMIT;");
 }
@@ -112,5 +112,36 @@ export async function deleteUpgradeByName(charName) {
   return db.run(
     "DELETE FROM upgrades WHERE characterID = (SELECT id FROM characters WHERE name = ?);",
     [charName]
+  );
+}
+
+export async function getSimcByUserId(userId) {
+  const db = await getDb();
+
+  return db.get("SELECT * FROM simc WHERE characterID=?;", [userId]);
+}
+
+export async function getSimcByUserName(charName) {
+  const db = await getDb();
+
+  return db.get(
+    `SELECT simc.* FROM simc
+    INNER JOIN characters ON simc.characterID = characters.id
+    WHERE characters.name=? COLLATE NOCASE;`,
+    [charName]
+  );
+}
+
+export async function upsertSimc(charName, text) {
+  const db = await getDb();
+  const user = await getCharacterByName(charName);
+  const simc = await getSimcByUserId(user.id);
+
+  return db.run(
+    `INSERT OR REPLACE INTO simc(
+        id,
+        characterID,
+        text) VALUES(?, ?, ?);`,
+    [simc ? simc.id : null, user.id, text]
   );
 }

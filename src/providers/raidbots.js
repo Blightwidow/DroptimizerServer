@@ -1,6 +1,8 @@
 import request from "request";
 import puppeteer from "puppeteer";
 
+import * as databaseProvider from "./database.js";
+
 export async function getAllItems() {
   return new Promise((resolve, reject) => {
     request.get(
@@ -19,7 +21,9 @@ export async function getAllItems() {
 }
 
 export async function getNewSimId(charName) {
-  const uri = `https://www.raidbots.com/simbot/droptimizer?region=${process.env.WOW_API_REGION}&realm=${process.env.WOW_API_REALM}&name=${charName}`;
+  const uri = `https://www.raidbots.com/simbot/droptimizer?region=${
+    process.env.WOW_API_REGION
+  }&realm=${process.env.WOW_API_REALM}&name=${charName.toLowerCase()}`;
   const cookies = [
     {
       name: "raidsid",
@@ -44,8 +48,16 @@ export async function getNewSimId(charName) {
     if (page) {
       await page.setCookie(...cookies);
       await page.goto(uri);
+
       // let raidbots have 3 secs to set up the page
-      await new Promise((resolve) => setTimeout(() => resolve(), 1000 * 3));
+      await page.waitFor('#SimcUserInput-input');
+      const simc = await databaseProvider.getSimcByUserName(charName);
+
+      if (simc) {
+        await page.$eval('#SimcUserInput-input', (el, value) => el.value = value, simc.text);
+        await new Promise((resolve) => setTimeout(() => resolve(), 1000 * 3));
+      }
+
       // select Raid
       const raidElement = await page.$(
         "#app > div > div.Container > section > section > div:nth-child(2) > section > div:nth-child(3) > div:nth-child(2) > div:nth-child(2) > div > div:nth-child(2)"
