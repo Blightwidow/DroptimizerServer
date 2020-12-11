@@ -3,15 +3,23 @@ import { getDb } from "../database.js";
 export async function getAllCharacters() {
   const db = await getDb();
 
-  return db.all(`SELECT characters.* FROM characters;`);
+  return db.all(
+    `SELECT characters.*, simc.lastUpdated as simcLastModified
+    FROM characters
+    LEFT JOIN simc ON simc.characterID = characters.id;`
+  );
 }
 
 export async function getCharacterByName(charName) {
   const db = await getDb();
 
-  return db.get(`SELECT * FROM characters WHERE name=? COLLATE NOCASE;`, [
-    charName,
-  ]);
+  return db.get(
+    `SELECT characters.*, simc.lastUpdated as simcLastModified
+    FROM characters
+    LEFT JOIN simc ON simc.characterID = characters.id
+    WHERE name=? COLLATE NOCASE;`,
+    [charName]
+  );
 }
 
 export async function upsertCharacter(name, lastModified, classId) {
