@@ -1,14 +1,11 @@
-FROM node:13-alpine
 
+FROM node:14-alpine AS builder
 WORKDIR /app
-
-RUN apk update && apk add python
-
-COPY ./package.json ./yarn.lock ./
-RUN yarn install --pure-lockfile --network-timeout 600000
-
+RUN apk update && apk add python build-base
 COPY ./ ./
+RUN yarn install --production=true --pure-lockfile --network-timeout 600000
 
-EXPOSE 3000
-
-CMD ["node", "/app/bin/www"]
+FROM node:14-alpine AS release
+WORKDIR /app
+COPY --from=builder /app/ .
+CMD ["node", "/app/bin/www.js"]

@@ -1,23 +1,41 @@
 import request from "request";
-import blizzard from "blizzard.js";
 
-import logger  from "../logger.js";
+import logger from "../logger.js";
 
 let blizzardToken = "";
-const client = blizzard.initialize({
-  key: process.env.WOW_API_CLIENTID,
-  secret: process.env.WOW_API_CLIENTSECRET,
-  origin: process.env.WOW_API_ORIGIN,
-});
 
 async function getToken() {
   if (blizzardToken) return blizzardToken;
 
-  const response = await client.getApplicationToken({
-    key: process.env.WOW_API_CLIENTID,
-    secret: process.env.WOW_API_CLIENTSECRET,
-    origin: process.env.WOW_API_REGION,
+  const response = await new Promise((resolve, reject) => {
+    request(
+      {
+        uri: `https://${process.env.WOW_API_REGION}.battle.net/oauth/token`,
+        auth: {
+          user: process.env.WOW_API_CLIENTID,
+          pass: process.env.WOW_API_SECRET,
+          sendImmediately: false,
+        },
+        headers: {
+          "User-Agent": `Node.js/${process.versions.node} Blizzard.js/3.2.0`,
+        },
+        qs: {
+          grant_type: "client_credentials",
+        },
+      },
+      (error, response, body) => {
+        if (response && response.statusCode === 200) {
+          let data = JSON.parse(body);
+          console.log(data);
+          resolve(data);
+          return;
+        }
+
+        reject(error);
+      }
+    );
   });
+
   blizzardToken = response.data.access_token;
 
   logger.info("[Blizzard] ", "Acquired new token");

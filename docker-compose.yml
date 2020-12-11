@@ -1,0 +1,26 @@
+version: "2.4"
+
+services:
+  droptimizer-server:
+    image: droptimizer-server:dev
+    build:
+      context: .
+    ports:
+      - 3000:3000
+      - 443:443
+    volumes:
+      - ./src/:/app/src
+      - ./app.js:/app/app.js
+      - ./data.db:/app/data.db
+    environment:
+      - NODE_ENV=production
+      - WOW_API_CLIENTID=ID
+      - WOW_API_CLIENTSECRET=SECRET
+      - WOW_API_REGION=us
+      - WOW_API_REALM=realm
+      - RAIDBOTS_COOKIE=kajflkasejnf
+      - RAIDBOTS_CFUID=kajflkasejnf
+      - RAIDBOTS_STRIPEID=kajflkasejnf
+      - TIMEZONE=Australia/Sydney
+      - CORS_ORIGIN=*
+      - LOGGER_LEVEL=debug
