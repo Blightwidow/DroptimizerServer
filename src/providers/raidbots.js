@@ -50,27 +50,38 @@ export async function getNewSimId(charName) {
       await page.goto(uri);
 
       // let raidbots have 3 secs to set up the page
-      await page.waitFor('#SimcUserInput-input');
+      await page.waitFor("#SimcUserInput-input");
       const simc = await databaseProvider.getSimcByUserName(charName);
 
       if (simc) {
-        await page.$eval('#SimcUserInput-input', (el, value) => el.value = value, simc.text);
+        await page.$eval(
+          "#SimcUserInput-input",
+          (el, value) => (el.value = value),
+          simc.text
+        );
         await new Promise((resolve) => setTimeout(() => resolve(), 1000 * 3));
       }
 
       // select Raid
-      const raidElement = await page.$(
-        "#app > div > div.Container > section > section > div:nth-child(2) > section > div:nth-child(3) > div:nth-child(2) > div:nth-child(2) > div > div:nth-child(2)"
+      await page.$eval(
+        "#app > div > div.Container > section > section > div:nth-child(2) > section > div:nth-child(3) > div:nth-child(2) > div:nth-child(2) > div > div:nth-child(2)",
+        (el) => el.click()
       );
-      await page.evaluate((element) => element.click(), raidElement);
       // select Tier
-      const tierElement = await page.$(
-        "#app > div > div.Container > section > section > div:nth-child(2) > section > div:nth-child(3) > div:nth-child(2) > div:nth-child(3) > div > div> div:nth-child(3)"
+      await page.$eval(
+        "#app > div > div.Container > section > section > div:nth-child(2) > section > div:nth-child(3) > div:nth-child(2) > div:nth-child(3) > div > div> div:nth-child(3)",
+        (el) => el.click()
       );
-      await page.evaluate((element) => element.click(), tierElement);
-      // start the sim, twice bc it doesnt work otherwise
-      await page.click(
-        "#app > div > div.Container > section > section > div:nth-child(2) > section > div:nth-child(11) > div > div:nth-child(1) > button"
+      // select Nightly
+      await page.$eval(
+        "#app > div > div.Container > section > section > div:nth-child(2) > section > div:nth-child(5) > div > label",
+        (el) => el.click()
+      );
+      await page.select("#AdvancedSimOptions-simcVersion", "nightly");
+      // start the sim
+      await page.$eval(
+        "#app > div > div.Container > section > section > div:nth-child(2) > section > div:nth-child(11) > div > div:nth-child(1) > button",
+        (el) => el.click()
       );
       await page.waitForNavigation();
       const reportID = page.url().split("/")[5];
