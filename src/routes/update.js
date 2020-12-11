@@ -5,9 +5,11 @@ import { updateSimReport, runSim } from "../handlers/simulation.js";
 import * as databaseProvider from "../providers/database.js";
 
 // express routes
-router.get("/report/:reportID", async function (req, res) {
-  await updateSimReport(req.params.reportID);
-  res.json(`Parsing report with id ${req.params.reportID}`);
+router.post("/report/", async function (req, res) {
+  const reportID = req.body.reportID;
+
+  await updateSimReport(reportID);
+  res.json(`Parsed report with id ${reportID}`);
 });
 
 router.post("/simc/", async function (req, res) {
@@ -16,7 +18,7 @@ router.post("/simc/", async function (req, res) {
   await databaseProvider.upsertSimc(charName, req.body.text);
   await runSim(charName);
 
-  res.json(`Parsing simC`);
+  res.json(`Parsed simC`);
 });
 
 export default router;

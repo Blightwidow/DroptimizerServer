@@ -2,6 +2,8 @@ import createError from "http-errors";
 import express from "express";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
+import jwt from "express-jwt";
+import jwks from "jwks-rsa";
 dotenv.config();
 
 import characterRoutes from "./src/routes/character.js";
@@ -10,7 +12,7 @@ import itemRoutes from "./src/routes/item.js";
 import updateRoutes from "./src/routes/update.js";
 import { initCrons, initData } from "./src/cron.js";
 import { initDatabase } from "./src/database.js";
-import logger  from "./src/logger.js";
+import logger from "./src/logger.js";
 
 // App init
 initDatabase();
@@ -30,7 +32,7 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
   res.set(
     "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
   );
   res.set(
     "Access-Control-Allow-Methods",
@@ -41,6 +43,22 @@ app.use((req, res, next) => {
   next();
 });
 
+// Authentication
+const jwtCheck = jwt({
+  secret: jwks.expressJwtSecret({
+    cache: true,
+    rateLimit: true,
+    jwksRequestsPerMinute: 5,
+    jwksUri: "https://blightwidow.eu.auth0.com/.well-known/jwks.json",
+  }),
+  audience: "https://api.loot.odrel.com",
+  issuer: "https://blightwidow.eu.auth0.com/",
+  algorithms: ["RS256"],
+});
+
+app.use(jwtCheck.unless({ method: ["GET"] }));
+
+// API v1 routes
 app.use("/1/character", characterRoutes);
 app.use("/1/upgrade", upgradeRoutes);
 app.use("/1/item", itemRoutes);
