@@ -5,25 +5,6 @@ import logger from "../../logger.js";
 import * as databaseProvider from "../../providers/database.js";
 import createHttpError from "http-errors";
 
-router.post("/bulk", async function (req, res) {
-  try {
-    if (!req.body.itemIDs) {
-      throw createHttpError.BadRequest();
-    }
-
-    const items = await databaseProvider.getItemsByIds(req.body.itemIDs);
-
-    if (items.length === 0) {
-      throw createHttpError.NotFound();
-    }
-
-    res.json(items);
-  } catch (error) {
-    logger.error("[Items] ", `Error getting items in bulk`, error);
-    throw error;
-  }
-});
-
 router.get("/search/:searchTerm", async function (req, res) {
   try {
     const items = await databaseProvider.searchItemsByName(req.params.searchTerm);

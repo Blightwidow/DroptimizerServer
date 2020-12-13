@@ -61,7 +61,7 @@ const jwtCheck = jwt({
   algorithms: ["RS256"],
 });
 
-app.use(jwtCheck.unless({ method: ["GET"], path: ["/v2/item/bulk"] }));
+// app.use(jwtCheck.unless({ method: ["GET"], path: ["/v2/item/bulk"] }));
 
 // API v1 routes
 app.use("/1/character", characterRoutes);
@@ -70,11 +70,11 @@ app.use("/1/item", itemRoutes);
 app.use("/1/update", updateRoutes);
 
 // API v2 routes
-app.use("/v2/player", v2PlayerRoutes);
-app.use("/v2/upgrade", v2UpgradeRoutes);
-app.use("/v2/item", v2ItemRoutes);
-app.use("/v2/boss", v2BossRoutes);
-app.use("/v2/inpuit", v2InputRoutes);
+app.use("/v2/players", v2PlayerRoutes);
+app.use("/v2/upgrades", v2UpgradeRoutes);
+app.use("/v2/items", v2ItemRoutes);
+app.use("/v2/bosses", v2BossRoutes);
+app.use("/v2/inputs", v2InputRoutes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

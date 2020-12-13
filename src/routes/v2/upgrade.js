@@ -18,13 +18,9 @@ router.get("/$", async function (req, res) {
 
 router.get("/:itemID", async function (req, res) {
   try {
-    const upgrade = await databaseProvider.getUpgradeByItem(req.params.itemID);
+    const upgrades = await databaseProvider.getUpgradesByItem(req.params.itemID);
 
-    if (!upgrade) {
-      throw createHttpError.NotFound();
-    }
-
-    res.json(upgrade);
+    res.json(upgrades);
   } catch (error) {
     logger.error("[Upgrades] ", `Error getting upgrade`, error);
     throw error;
