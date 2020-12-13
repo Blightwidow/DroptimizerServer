@@ -1,8 +1,8 @@
 import express from "express";
 const router = express.Router();
 
-import { updateSimReport, runSim } from "../handlers/simulation.js";
-import * as databaseProvider from "../providers/database.js";
+import { updateSimReport, generateSim } from "../../handlers/simulation.js";
+import * as databaseProvider from "../../providers/database.js";
 
 // express routes
 router.post("/report/", async function (req, res) {
@@ -16,9 +16,9 @@ router.post("/simc/", async function (req, res) {
   const [, charName] = req.body.text.match(/^.+="([^"]+)"/m);
 
   await databaseProvider.upsertSimc(charName, req.body.text);
-  await runSim(charName);
+  await generateSim(charName);
 
-  res.json(`Parsed simC`);
+  res.json(`Queued simC`);
 });
 
 export default router;

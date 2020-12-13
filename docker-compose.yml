@@ -7,7 +7,6 @@ services:
       context: .
     ports:
       - 3000:3000
-      - 443:443
     volumes:
       - ./src/:/app/src
       - ./app.js:/app/app.js

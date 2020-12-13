@@ -1,8 +1,8 @@
 import express from "express";
 const router = express.Router();
 
-import logger from "../logger.js";
-import * as databaseProvider from "../providers/database.js";
+import logger from "../../logger.js";
+import * as databaseProvider from "../../providers/database.js";
 
 // gets all characters
 router.get("/$", async function (req, res) {

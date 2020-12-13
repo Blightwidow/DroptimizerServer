@@ -2,7 +2,7 @@ import cron from "node-cron";
 
 import logger from "./logger.js";
 import { updateAllCharacters } from "./handlers/character.js";
-import { runAllSims } from "./handlers/simulation.js";
+import { queueAllSims } from "./handlers/simulation.js";
 import { updateItems } from "./handlers/items.js";
 
 export async function initData() {
@@ -31,7 +31,7 @@ export function initCrons() {
     function() {
       logger.warn("[CRON] ", "Running character sims");
 
-      runAllSims();
+      queueAllSims();
     },
     { timezone: process.env.TIMEZONE }
   );

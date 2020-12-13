@@ -5,6 +5,7 @@
  */
 import http from "http";
 import app from "../app.js";
+import logger from "../src/logger.js";
 
 /**
  * Get port from environment and store in Express.
@@ -24,6 +25,9 @@ var server = http.createServer(app);
  */
 
 server.listen(port);
+server.on("listening", () => {
+  logger.info("[Express] Server listening on port ", port);
+});
 server.on("error", onError);
 
 /**

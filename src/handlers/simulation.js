@@ -4,7 +4,7 @@ import * as databaseProvider from "../providers/database.js";
 import * as raidbotsProvider from "../providers/raidbots.js";
 
 // runs a raidbotsProvider sim for the given character
-export async function runSim(charName) {
+export async function generateSim(charName) {
   try {
     logger.debug("[Simulation] ", `Starting new sim: ${charName}`);
     const reportId = await raidbotsProvider.getNewSimId(charName);
@@ -19,11 +19,11 @@ export async function runSim(charName) {
   }
 }
 
-export async function runAllSims() {
+export async function queueAllSims() {
   logger.debug("[Simulation] ", `Starting all simulations`);
   const users = await databaseProvider.getAllCharacters();
 
-  return Promise.all(users.map((user) => runSim(user.name)));
+  return Promise.all(users.map((user) => generateSim(user.name)));
 }
 
 export async function updateSimReport(reportID) {

@@ -45,10 +45,25 @@ export async function deleteCharacterByName(charName) {
   ]);
 }
 
-export async function getItemsById(itemID) {
+export async function getItemById(itemID) {
   const db = await getDb();
 
   return db.get("SELECT * FROM items WHERE id=?;", [itemID]);
+}
+
+export async function getItemsByIds(itemIDs) {
+  const db = await getDb();
+
+  return db.all(`SELECT * FROM items WHERE id IN (${itemIDs.join(",")});`);
+}
+
+export async function searchItemsByName(searchTerm, minLevel = 150) {
+  const db = await getDb();
+
+  return db.all(
+    `SELECT * FROM items WHERE name Like '%${searchTerm}%' AND itemLevel >= ?;`,
+    [minLevel]
+  );
 }
 
 export async function upsertItems(items) {
@@ -76,7 +91,7 @@ export async function getAllUpgrades() {
   return db.all("SELECT * FROM upgrades;");
 }
 
-export async function getUpgradeByItem(charName, itemID) {
+export async function getUpgradesByNameAndItem(charName, itemID) {
   const db = await getDb();
 
   return db.get(
@@ -87,6 +102,19 @@ export async function getUpgradeByItem(charName, itemID) {
     WHERE characters.name=? COLLATE NOCASE
     AND upgrades.itemID=?;`,
     [charName, itemID]
+  );
+}
+
+export async function getUpgradesByItem(itemID) {
+  const db = await getDb();
+
+  return db.get(
+    `SELECT upgrades.*, characters.*, simc.lastUpdated as simcLastModified
+    FROM upgrades
+    JOIN characters ON upgrades.characterID = characters.id
+    LEFT JOIN simc ON simc.characterID = characters.id
+    AND upgrades.itemID=?;`,
+    [itemID]
   );
 }
 
