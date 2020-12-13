@@ -3,7 +3,7 @@ import { open } from "sqlite";
 
 import logger from "./logger.js";
 
-const dbFilePath = "./data.db";
+const dbFilePath = "./data/data.db";
 let db;
 
 export async function openDb() {

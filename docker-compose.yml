@@ -10,7 +10,7 @@ services:
     volumes:
       - ./src/:/app/src
       - ./app.js:/app/app.js
-      - ./data.db:/app/data.db
+      - ./data:/app/data
     environment:
       - NODE_ENV=production
       - WOW_API_CLIENTID=ID
