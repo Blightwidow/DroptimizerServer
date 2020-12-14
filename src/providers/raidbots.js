@@ -67,9 +67,17 @@ export async function getNewSimId(charName) {
         "#app > div > div.Container > section > section > div:nth-child(2) > section > div:nth-child(3) > div:nth-child(2) > div:nth-child(2) > div > div:nth-child(2)",
         (el) => el.click()
       );
+      const tierMapping = {
+        raidFinder: "div:nth-child(1)",
+        normal: "div:nth-child(2)",
+        heroic: "div:nth-child(3)",
+        mythic: "div:nth-child(4)",
+      };
       // select Tier
       await page.$eval(
-        "#app > div > div.Container > section > section > div:nth-child(2) > section > div:nth-child(3) > div:nth-child(2) > div:nth-child(3) > div > div> div:nth-child(3)",
+        `#app > div > div.Container > section > section > div:nth-child(2) > section > div:nth-child(3) > div:nth-child(2) > div:nth-child(3) > div > div> ${
+          tierMapping[process.env.RAIDBOT_TIER] || tierMapping.mythic
+        }`,
         (el) => el.click()
       );
       // select Nightly
