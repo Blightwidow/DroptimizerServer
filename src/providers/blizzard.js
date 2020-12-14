@@ -14,7 +14,6 @@ async function getToken() {
         auth: {
           user: process.env.WOW_API_CLIENTID,
           pass: process.env.WOW_API_SECRET,
-          sendImmediately: false
         },
         headers: {
           "User-Agent": `Node.js/${process.versions.node} Blizzard.js/3.2.0`
@@ -26,7 +25,6 @@ async function getToken() {
       (error, response, body) => {
         if (response && response.statusCode === 200) {
           let data = JSON.parse(body);
-          console.log(data);
           resolve(data);
           return;
         }
@@ -36,7 +34,7 @@ async function getToken() {
     );
   });
 
-  blizzardToken = response.data.access_token;
+  blizzardToken = response.access_token;
 
   logger.info("[Blizzard] ", "Acquired new token");
   return blizzardToken;
