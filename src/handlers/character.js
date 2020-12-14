@@ -26,7 +26,7 @@ export async function updateAllCharacters() {
 
     const users = await databaseProvider.getAllCharacters();
 
-    return Promise.all(users.map((user) => updateCharacter(user.name)));
+    return Promise.all(users.map(user => updateCharacter(user.name)));
   } catch (e) {
     logger.error("[Character] ", `Error updating all users `, e);
   }

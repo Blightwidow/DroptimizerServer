@@ -41,7 +41,7 @@ export async function deleteCharacterByName(charName) {
   const db = await getDb();
 
   return db.run(`DELETE FROM characters WHERE name = ? COLLATE NOCASE;`, [
-    charName,
+    charName
   ]);
 }
 
@@ -78,7 +78,7 @@ export async function upsertItems(items) {
       items[i].name,
       items[i].icon || "",
       items[i].quality,
-      items[i].itemLevel,
+      items[i].itemLevel
     ];
     await db.run(sql, params);
   }

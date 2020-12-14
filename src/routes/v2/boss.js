@@ -9,22 +9,22 @@ const BOSSES = [
   {
     id: 1,
     name: "Shriekwing",
-    loot: [183034, 182976, 183027, 182979, 184016],
+    loot: [183034, 182976, 183027, 182979, 184016]
   },
   {
     id: 2,
     name: "Huntsman Altimor",
-    loot: [183040, 182988, 182996, 183018, 182995, 184017],
+    loot: [183040, 182988, 182996, 183018, 182995, 184017]
   },
   {
     id: 3,
     name: "Sun King Salvation",
-    loot: [183033, 182986, 182977, 183007, 183025, 184019, 184018, 184020],
+    loot: [183033, 182986, 182977, 183007, 183025, 184019, 184018, 184020]
   },
   {
     id: 4,
     name: "Artificer Xymox",
-    loot: [182987, 183019, 183004, 183012, 183038, 184021],
+    loot: [182987, 183019, 183004, 183012, 183038, 184021]
   },
   {
     id: 5,
@@ -38,28 +38,28 @@ const BOSSES = [
       182992,
       183024,
       184022,
-      184023,
-    ],
+      184023
+    ]
   },
   {
     id: 6,
     name: "Lady Inerva Darkvein",
-    loot: [183021, 183026, 183015, 182985, 183037, 184025],
+    loot: [183021, 183026, 183015, 182985, 183037, 184025]
   },
   {
     id: 7,
     name: "The Council of Blood",
-    loot: [183039, 182989, 183014, 183011, 183030, 183023, 182983, 184024],
+    loot: [183039, 182989, 183014, 183011, 183030, 183023, 182983, 184024]
   },
   {
     id: 8,
     name: "Sludgefist",
-    loot: [182999, 182984, 183022, 183005, 183016, 182981, 183006, 184026],
+    loot: [182999, 182984, 183022, 183005, 183016, 182981, 183006, 184026]
   },
   {
     id: 9,
     name: "Stone Legion Generals",
-    loot: [183029, 183032, 182998, 182991, 183002, 184027],
+    loot: [183029, 183032, 182998, 182991, 183002, 184027]
   },
   {
     id: 10,
@@ -73,14 +73,15 @@ const BOSSES = [
       184024,
       184030,
       184029,
-      184031,
-    ],
-  },
+      184031
+    ]
+  }
 ];
 
 // gets all bosses
-router.get("/$", async function (req, res) {
+router.get("/$", async function(req, res) {
   try {
+    // eslint-disable-next-line no-unused-vars
     res.json(BOSSES.map(({ loot, ...rest }) => rest));
   } catch (error) {
     logger.error("[Boss] ", `Error getting all bosses`, error);
@@ -89,14 +90,15 @@ router.get("/$", async function (req, res) {
 });
 
 // gets a boss by name
-router.get("/:id", async function (req, res) {
+router.get("/:id", async function(req, res) {
   try {
-    const boss = BOSSES.find((boss) => boss.id === req.params.id);
+    const boss = BOSSES.find(boss => boss.id === req.params.id);
 
     if (!boss) {
       throw createHttpError.NotFound();
     }
 
+    // eslint-disable-next-line no-unused-vars
     const { loot, ...rest } = boss;
     res.json(rest);
   } catch (error) {
@@ -105,9 +107,9 @@ router.get("/:id", async function (req, res) {
   }
 });
 
-router.get("/:id/items", async function (req, res) {
+router.get("/:id/items", async function(req, res) {
   try {
-    const boss = BOSSES.find((boss) => boss.id == req.params.id);
+    const boss = BOSSES.find(boss => boss.id == req.params.id);
 
     if (!boss) {
       throw createHttpError.NotFound();

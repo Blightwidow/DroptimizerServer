@@ -6,7 +6,7 @@ import logger from "../../logger.js";
 import * as databaseProvider from "../../providers/database.js";
 
 // gets all players
-router.get("/$", async function (req, res) {
+router.get("/$", async function(req, res) {
   try {
     const players = await databaseProvider.getAllCharacters();
 
@@ -18,7 +18,7 @@ router.get("/$", async function (req, res) {
 });
 
 // gets a player by name
-router.get("/:name", async function (req, res) {
+router.get("/:name", async function(req, res) {
   try {
     const player = await databaseProvider.getCharacterByName(req.params.name);
 
@@ -34,7 +34,7 @@ router.get("/:name", async function (req, res) {
 });
 
 // delete a player by name
-router.delete("/:name", async function (req, res) {
+router.delete("/:name", async function(req, res) {
   try {
     const player = await databaseProvider.deleteCharacterByName(
       req.params.name

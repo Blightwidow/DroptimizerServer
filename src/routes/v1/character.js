@@ -5,7 +5,7 @@ import logger from "../../logger.js";
 import * as databaseProvider from "../../providers/database.js";
 
 // gets all characters
-router.get("/$", async function (req, res) {
+router.get("/$", async function(req, res) {
   try {
     const characters = await databaseProvider.getAllCharacters();
 
@@ -16,7 +16,7 @@ router.get("/$", async function (req, res) {
 });
 
 // gets a character by name
-router.get("/:name", async function (req, res) {
+router.get("/:name", async function(req, res) {
   try {
     const character = await databaseProvider.getCharacterByName(
       req.params.name
@@ -33,7 +33,7 @@ router.get("/:name", async function (req, res) {
 });
 
 // delete a character by name
-router.delete("/:name", async function (req, res) {
+router.delete("/:name", async function(req, res) {
   try {
     const character = await databaseProvider.deleteCharacterByName(
       req.params.name

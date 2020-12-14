@@ -4,7 +4,7 @@ const router = express.Router();
 import logger from "../../logger.js";
 import * as databaseProvider from "../../providers/database.js";
 
-router.get("/$", async function (req, res) {
+router.get("/$", async function(req, res) {
   try {
     const upgrades = await databaseProvider.getAllUpgrades();
 
@@ -14,7 +14,7 @@ router.get("/$", async function (req, res) {
   }
 });
 
-router.get("/:name/:itemID", async function (req, res) {
+router.get("/:name/:itemID", async function(req, res) {
   try {
     const upgrade = await databaseProvider.getUpgradesByNameAndItem(
       req.params.name,

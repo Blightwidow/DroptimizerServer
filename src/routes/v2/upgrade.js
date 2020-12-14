@@ -1,11 +1,10 @@
 import express from "express";
-import createHttpError from "http-errors";
 const router = express.Router();
 
 import logger from "../../logger.js";
 import * as databaseProvider from "../../providers/database.js";
 
-router.get("/$", async function (req, res) {
+router.get("/$", async function(req, res) {
   try {
     const upgrades = await databaseProvider.getAllUpgrades();
 
@@ -16,9 +15,11 @@ router.get("/$", async function (req, res) {
   }
 });
 
-router.get("/:itemID", async function (req, res) {
+router.get("/:itemID", async function(req, res) {
   try {
-    const upgrades = await databaseProvider.getUpgradesByItem(req.params.itemID);
+    const upgrades = await databaseProvider.getUpgradesByItem(
+      req.params.itemID
+    );
 
     res.json(upgrades);
   } catch (error) {

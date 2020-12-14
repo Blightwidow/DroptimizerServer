@@ -7,7 +7,7 @@ import { updateSimReport, generateSim } from "../../handlers/simulation.js";
 import * as databaseProvider from "../../providers/database.js";
 
 // express routes
-router.post("/report", async function (req, res) {
+router.post("/report", async function(req, res) {
   try {
     if (!req.body.reportID) {
       throw createHttpError.BadRequest();
@@ -22,7 +22,7 @@ router.post("/report", async function (req, res) {
   }
 });
 
-router.post("/simc", async function (req, res) {
+router.post("/simc", async function(req, res) {
   try {
     if (!req.body.text) {
       throw createHttpError.BadRequest();

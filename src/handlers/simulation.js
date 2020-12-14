@@ -9,7 +9,7 @@ export async function generateSim(charName) {
     logger.debug("[Simulation] ", `Starting new sim: ${charName}`);
     const reportId = await raidbotsProvider.getNewSimId(charName);
 
-    setTimeout(function () {
+    setTimeout(function() {
       // let raidbotsProvider have 10 mins to process the sim
       updateSimReport(reportId);
     }, 1000 * 60 * 3);
@@ -23,7 +23,7 @@ export async function queueAllSims() {
   logger.debug("[Simulation] ", `Starting all simulations`);
   const users = await databaseProvider.getAllCharacters();
 
-  return Promise.all(users.map((user) => generateSim(user.name)));
+  return Promise.all(users.map(user => generateSim(user.name)));
 }
 
 export async function updateSimReport(reportID) {
@@ -55,7 +55,7 @@ export async function updateSimReport(reportID) {
     }, {});
 
     return Promise.all(
-      Object.values(upgrades).map((result) =>
+      Object.values(upgrades).map(result =>
         databaseProvider.upsertUpgrade(
           user.id,
           result,

@@ -5,9 +5,11 @@ import logger from "../../logger.js";
 import * as databaseProvider from "../../providers/database.js";
 import createHttpError from "http-errors";
 
-router.get("/search/:searchTerm", async function (req, res) {
+router.get("/search/:searchTerm", async function(req, res) {
   try {
-    const items = await databaseProvider.searchItemsByName(req.params.searchTerm);
+    const items = await databaseProvider.searchItemsByName(
+      req.params.searchTerm
+    );
 
     res.json(items);
   } catch (error) {
@@ -17,7 +19,7 @@ router.get("/search/:searchTerm", async function (req, res) {
 });
 
 // gets an itme by id
-router.get("/:itemID", async function (req, res) {
+router.get("/:itemID", async function(req, res) {
   try {
     const item = await databaseProvider.getItemById(req.params.itemID);
 
