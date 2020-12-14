@@ -1,4 +1,5 @@
 import express from "express";
+import { updateCharacter } from "../../handlers/character.js";
 const router = express.Router();
 
 import { updateSimReport, generateSim } from "../../handlers/simulation.js";
@@ -15,6 +16,7 @@ router.post("/report/", async function (req, res) {
 router.post("/simc/", async function (req, res) {
   const [, charName] = req.body.text.match(/^.+="([^"]+)"/m);
 
+  await updateCharacter(charName);
   await databaseProvider.upsertSimc(charName, req.body.text);
   await generateSim(charName);
 
