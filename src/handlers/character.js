@@ -14,8 +14,9 @@ export async function updateCharacter(charName) {
       data.character_class.id
     );
     logger.info("[Character] ", `Updated character: ${data.name}`);
-  } catch (e) {
-    logger.error("[Character] ", `Error updating ${charName} `, e);
+  } catch (error) {
+    logger.error("[Character] ", `Error updating ${charName} `, error);
+    throw error;
   }
 }
 
@@ -26,8 +27,9 @@ export async function updateAllCharacters() {
 
     const users = await databaseProvider.getAllCharacters();
 
-    return Promise.all(users.map(user => updateCharacter(user.name)));
-  } catch (e) {
-    logger.error("[Character] ", `Error updating all users `, e);
+    return Promise.all(users.map((user) => updateCharacter(user.name)));
+  } catch (error) {
+    logger.error("[Character] ", `Error updating all users `, error);
+    throw error;
   }
 }

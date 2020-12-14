@@ -79,4 +79,4 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
-data/data.db
+data/data.db*

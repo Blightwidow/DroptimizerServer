@@ -17,6 +17,7 @@ export async function openDb() {
     return db;
   } catch (error) {
     logger.error("[DB] ", error);
+    throw error;
   }
 }
 

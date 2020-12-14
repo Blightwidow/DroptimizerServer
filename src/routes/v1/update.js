@@ -6,21 +6,25 @@ import { updateSimReport, generateSim } from "../../handlers/simulation.js";
 import * as databaseProvider from "../../providers/database.js";
 
 // express routes
-router.post("/report/", async function(req, res) {
+router.post("/report/", async function (req, res) {
   const reportID = req.body.reportID;
 
   await updateSimReport(reportID);
   res.json(`Parsed report with id ${reportID}`);
 });
 
-router.post("/simc/", async function(req, res) {
-  const [, charName] = req.body.text.match(/^.+="([^"]+)"/m);
+router.post("/simc/", async function (req, res, next) {
+  try {
+    const [, charName] = req.body.text.match(/^.+="([^"]+)"/m);
 
-  await updateCharacter(charName);
-  await databaseProvider.upsertSimc(charName, req.body.text);
-  await generateSim(charName);
+    await updateCharacter(charName);
+    await databaseProvider.upsertSimc(charName, req.body.text);
+    await generateSim(charName);
 
-  res.json(`Queued simC`);
+    res.json(`Queued simC`);
+  } catch (error) {
+    next(error);
+  }
 });
 
 export default router;

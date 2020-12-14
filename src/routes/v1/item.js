@@ -5,13 +5,14 @@ import logger from "../../logger.js";
 import * as databaseProvider from "../../providers/database.js";
 
 // gets an itme by id
-router.get("/:itemID", async function(req, res) {
+router.get("/:itemID", async function (req, res, next) {
   try {
     const character = await databaseProvider.getItemById(req.params.itemID);
 
     res.json(character);
   } catch (error) {
     logger.error("[Items] ", `Error getting items ${req.params.itemID}`, error);
+    next(error);
   }
 });
 

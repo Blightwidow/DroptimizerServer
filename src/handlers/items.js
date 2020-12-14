@@ -11,7 +11,8 @@ export async function updateItems() {
 
     await databaseProvider.upsertItems(items);
     logger.info("[Items] ", `${items.length} items updated`);
-  } catch (e) {
-    logger.error("[Items] ", e);
+  } catch (error) {
+    logger.error("[Items] ", error);
+    throw error;
   }
 }

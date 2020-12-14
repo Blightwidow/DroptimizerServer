@@ -5,18 +5,19 @@ import logger from "../../logger.js";
 import * as databaseProvider from "../../providers/database.js";
 
 // gets all characters
-router.get("/$", async function(req, res) {
+router.get("/$", async function (req, res, next) {
   try {
     const characters = await databaseProvider.getAllCharacters();
 
     res.json(characters);
   } catch (error) {
     logger.error("[Character] ", `Error getting all character`, error);
+    next(error);
   }
 });
 
 // gets a character by name
-router.get("/:name", async function(req, res) {
+router.get("/:name", async function (req, res, next) {
   try {
     const character = await databaseProvider.getCharacterByName(
       req.params.name
@@ -29,11 +30,12 @@ router.get("/:name", async function(req, res) {
       `Error getting character ${req.params.name}`,
       error
     );
+    next(error);
   }
 });
 
 // delete a character by name
-router.delete("/:name", async function(req, res) {
+router.delete("/:name", async function (req, res, next) {
   try {
     const character = await databaseProvider.deleteCharacterByName(
       req.params.name
@@ -46,6 +48,7 @@ router.delete("/:name", async function(req, res) {
       `Error deleting character ${req.params.name}`,
       error
     );
+    next(error);
   }
 });
 

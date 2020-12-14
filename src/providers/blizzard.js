@@ -16,14 +16,15 @@ async function getToken() {
           pass: process.env.WOW_API_SECRET,
         },
         headers: {
-          "User-Agent": `Node.js/${process.versions.node} Blizzard.js/3.2.0`
+          "User-Agent": `Node.js/${process.versions.node} Blizzard.js/3.2.0`,
         },
         qs: {
-          grant_type: "client_credentials"
-        }
+          grant_type: "client_credentials",
+        },
       },
       (error, response, body) => {
         if (response && response.statusCode === 200) {
+          console.log(body, typeof body);
           let data = JSON.parse(body);
           resolve(data);
           return;
@@ -52,7 +53,7 @@ export async function getCharacterData(charName) {
       }/${charName.toLowerCase()}?namespace=profile-${
         process.env.WOW_API_REGION
       }&locale=en_US&access_token=${token}`,
-      function(error, response, body) {
+      function (error, response, body) {
         if (response && response.statusCode === 200) {
           let report = JSON.parse(body);
           return resolve(report);

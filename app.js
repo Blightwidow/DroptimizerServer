@@ -61,7 +61,7 @@ const jwtCheck = jwt({
   algorithms: ["RS256"],
 });
 
-// app.use(jwtCheck.unless({ method: ["GET"], path: ["/v2/item/bulk"] }));
+app.use(jwtCheck.unless({ method: ["GET"], path: ["/v2/item/bulk"] }));
 
 // API v1 routes
 app.use("/1/character", characterRoutes);
@@ -89,7 +89,7 @@ app.use(function (err, req, res, next) {
   // render the error page
   res.status(errStatus);
 
-  if (err.expose) {
+  if (errStatus < 500 || err.expose) {
     res.send(err.message);
   } else {
     res.send("An error has occured");
