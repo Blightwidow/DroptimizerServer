@@ -24,7 +24,6 @@ async function getToken() {
       },
       (error, response, body) => {
         if (response && response.statusCode === 200) {
-          console.log(body, typeof body);
           let data = JSON.parse(body);
           resolve(data);
           return;
