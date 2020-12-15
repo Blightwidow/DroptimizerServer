@@ -41,8 +41,7 @@ export async function getNewSimId(charName) {
   ];
 
   const browser = await puppeteer.launch({
-    headless: false,
-    // args: ["--no-sandbox"],
+    args: ["--no-sandbox"],
   });
   if (browser) {
     const page = await browser.newPage();
