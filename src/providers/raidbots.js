@@ -21,9 +21,7 @@ export async function getAllItems() {
 }
 
 export async function getNewSimId(charName) {
-  const uri = `https://www.raidbots.com/simbot/droptimizer?region=${
-    process.env.WOW_API_REGION
-  }&realm=${process.env.WOW_API_REALM}&name=${charName.toLowerCase()}`;
+  const uri = `https://www.raidbots.com/simbot/droptimizer?region=${process.env.WOW_API_REGION}&realm=${process.env.WOW_API_REALM}`;
   const cookies = [
     {
       name: "raidsid",
@@ -42,27 +40,32 @@ export async function getNewSimId(charName) {
     },
   ];
 
-  const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
+  const browser = await puppeteer.launch({
+    headless: false,
+    // args: ["--no-sandbox"],
+  });
   if (browser) {
     const page = await browser.newPage();
     if (page) {
       await page.setCookie(...cookies);
       await page.goto(uri);
 
-      // let raidbots have 3 secs to set up the page
       await page.waitFor("#SimcUserInput-input");
       const simc = await databaseProvider.getSimcByUserName(charName);
 
       if (simc) {
-        await page.$eval(
-          "#SimcUserInput-input",
-          (el, value) => (el.value = value),
-          simc.text
-        );
-        await new Promise((resolve) => setTimeout(() => resolve(), 1000 * 3));
+        await page.focus("#SimcUserInput-input");
+        await page.keyboard.sendCharacter(simc.text);
+      } else {
+        await page.focus("#ArmoryInput-armorySearch");
+        await page.keyboard.sendCharacter(charName.toLowerCase());
       }
+      await page.waitFor(1000);
 
       // select Raid
+      await page.waitFor(
+        "#app > div > div.Container > section > section > div:nth-child(2) > section > div:nth-child(3) > div:nth-child(2) > div:nth-child(2) > div > div:nth-child(2)"
+      );
       await page.$eval(
         "#app > div > div.Container > section > section > div:nth-child(2) > section > div:nth-child(3) > div:nth-child(2) > div:nth-child(2) > div > div:nth-child(2)",
         (el) => el.click()
