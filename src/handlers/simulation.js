@@ -1,33 +1,45 @@
+import PQueue from "p-queue";
+
 import { updateCharacter } from "./character.js";
 import logger from "../logger.js";
 import * as databaseProvider from "../providers/database.js";
 import * as raidbotsProvider from "../providers/raidbots.js";
 
-// runs a raidbotsProvider sim for the given character
-export async function generateSim(charName) {
+const raidbotQueue = new PQueue.default({ concurrency: 1 });
+
+async function generateSim(charName) {
   try {
-    logger.debug("[Simulation] ", `Starting new sim: ${charName}`);
+    logger.debug("[Simulation] ", `Starting new sim for ${charName}`);
     const reportId = await raidbotsProvider.getNewSimId(charName);
 
-    setTimeout(function () {
-      // let raidbotsProvider have 10 mins to process the sim
-      updateSimReport(reportId);
-    }, 1000 * 60 * 3);
-    logger.info("[Simulation] ", `Queued new sim with ID: ${reportId} `);
+    queueSimReport(reportId);
+    logger.info("[Simulation] ", `Started new sim with ID: ${reportId} `);
   } catch (error) {
     logger.error("[Simulation] ", error);
     throw error;
   }
 }
 
-export async function queueAllSims() {
-  logger.debug("[Simulation] ", `Starting all simulations`);
-  const users = await databaseProvider.getAllCharacters();
-
-  return Promise.all(users.map((user) => generateSim(user.name)));
+export async function queueSimReport(reportId) {
+  setTimeout(() => {
+    raidbotQueue.add(() => updateSimReport(reportId));
+    logger.debug("[Simulation] ", `Queued simulation report for ${reportId}`);
+  }, 1000 * 60 * 5);
 }
 
-export async function updateSimReport(reportID) {
+export async function queueSim(charName) {
+  raidbotQueue.add(() => generateSim(charName));
+  logger.debug("[Simulation] ", `Queued simulation for ${charName}`);
+}
+
+export async function queueAllSims() {
+  logger.debug("[Simulation] ", `Queuing all simulations`);
+  const users = await databaseProvider.getAllCharacters();
+
+  return Promise.all(users.map((user) => queueSim(user.name)));
+}
+
+async function updateSimReport(reportID) {
   try {
     logger.debug(
       "[Simulation] ",
@@ -55,7 +67,7 @@ export async function updateSimReport(reportID) {
       return { ...acc, [itemId]: upgrade };
     }, {});
 
-    return Promise.all(
+    await Promise.all(
       Object.values(upgrades).map((result) =>
         databaseProvider.upsertUpgrade(
           user.id,

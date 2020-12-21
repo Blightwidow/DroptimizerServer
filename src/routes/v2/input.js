@@ -3,7 +3,7 @@ import createHttpError from "http-errors";
 const router = express.Router();
 
 import logger from "../../logger.js";
-import { updateSimReport, generateSim } from "../../handlers/simulation.js";
+import { queueSimReport, queueSim } from "../../handlers/simulation.js";
 import * as databaseProvider from "../../providers/database.js";
 
 // express routes
@@ -13,7 +13,7 @@ router.post("/report", async function(req, res) {
       throw createHttpError.BadRequest();
     }
 
-    await updateSimReport(req.body.reportID);
+    await queueSimReport(req.body.reportID);
 
     res.json(`Parsed report with id ${req.body.reportID}`);
   } catch (error) {
@@ -35,7 +35,7 @@ router.post("/simc", async function(req, res) {
     }
 
     await databaseProvider.upsertSimc(charName, req.body.text);
-    await generateSim(charName);
+    await queueSim(charName);
 
     res.json(`Parsed simC`);
   } catch (error) {

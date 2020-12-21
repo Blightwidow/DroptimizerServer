@@ -8,6 +8,7 @@ import { updateItems } from "./handlers/items.js";
 export async function initData() {
   try {
     await updateItems();
+    await queueAllSims();
   } catch (e) {
     logger.error("[Data] ", e);
   }
