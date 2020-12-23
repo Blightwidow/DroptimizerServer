@@ -61,7 +61,7 @@ export async function searchItemsByName(searchTerm, minLevel = 150) {
   const db = await getDb();
 
   return db.all(
-    `SELECT * FROM items WHERE name Like '%${searchTerm}%' AND itemLevel >= ?;`,
+    `SELECT * FROM items WHERE name Like '%${searchTerm}%' AND itemLevel >= ? ORDER BY itemLevel DESC;`,
     [minLevel]
   );
 }
@@ -113,7 +113,7 @@ export async function getUpgradesByItem(itemID) {
     FROM upgrades
     JOIN characters ON upgrades.characterID = characters.id
     LEFT JOIN simc ON simc.characterID = characters.id
-    AND upgrades.itemID=?;`,
+    WHERE upgrades.itemID=?;`,
     [itemID]
   );
 }

@@ -5,10 +5,10 @@ import logger from "../../logger.js";
 import * as databaseProvider from "../../providers/database.js";
 import createHttpError from "http-errors";
 
-router.get("/search/:searchTerm", async function(req, res) {
+router.post("/search", async function(req, res) {
   try {
     const items = await databaseProvider.searchItemsByName(
-      req.params.searchTerm
+      req.body.term
     );
 
     res.json(items);

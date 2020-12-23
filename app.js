@@ -61,7 +61,7 @@ const jwtCheck = jwt({
   algorithms: ["RS256"],
 });
 
-app.use(jwtCheck.unless({ method: ["GET"], path: ["/v2/item/bulk"] }));
+app.use(jwtCheck.unless({ method: ["GET", "OPTIONS"], path: [/search/] }));
 
 // API v1 routes
 app.use("/1/character", characterRoutes);
@@ -85,7 +85,7 @@ app.use(function (req, res, next) {
 // eslint-disable-next-line no-unused-vars
 app.use(function (err, req, res, next) {
   const errStatus = err.status || 500;
-  logger.warn("[Express] Error ", errStatus, ' on path ', req.path);
+  logger.warn("[Express] Error ", errStatus, " on path ", req.path);
 
   // render the error page
   res.status(errStatus);
