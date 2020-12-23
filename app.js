@@ -1,8 +1,6 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-import jwt from "express-jwt";
-import jwks from "jwks-rsa";
 import createHttpError from "http-errors";
 dotenv.config();
 
@@ -47,21 +45,6 @@ app.use((req, res, next) => {
   res.set("Access-Control-Allow-Origin", process.env.CORS_ORIGIN);
   next();
 });
-
-// Authentication
-const jwtCheck = jwt({
-  secret: jwks.expressJwtSecret({
-    cache: true,
-    rateLimit: true,
-    jwksRequestsPerMinute: 5,
-    jwksUri: "https://blightwidow.eu.auth0.com/.well-known/jwks.json",
-  }),
-  audience: "https://api.loot.odrel.com",
-  issuer: "https://blightwidow.eu.auth0.com/",
-  algorithms: ["RS256"],
-});
-
-app.use(jwtCheck.unless({ method: ["GET", "OPTIONS"], path: [/search/] }));
 
 // API v1 routes
 app.use("/1/character", characterRoutes);

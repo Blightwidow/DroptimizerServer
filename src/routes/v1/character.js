@@ -2,6 +2,7 @@ import express from "express";
 const router = express.Router();
 
 import logger from "../../logger.js";
+import { isAdmin, jwtCheck } from "../../auth.js";
 import * as databaseProvider from "../../providers/database.js";
 
 // gets all characters
@@ -35,7 +36,7 @@ router.get("/:name", async function (req, res, next) {
 });
 
 // delete a character by name
-router.delete("/:name", async function (req, res, next) {
+router.delete("/:name", jwtCheck, isAdmin, async function (req, res, next) {
   try {
     const character = await databaseProvider.deleteCharacterByName(
       req.params.name
