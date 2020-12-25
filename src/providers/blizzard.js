@@ -2,11 +2,7 @@ import request from "request";
 
 import logger from "../logger.js";
 
-let blizzardToken = "";
-
 async function getToken() {
-  if (blizzardToken) return blizzardToken;
-
   const response = await new Promise((resolve, reject) => {
     request(
       {
@@ -34,10 +30,8 @@ async function getToken() {
     );
   });
 
-  blizzardToken = response.access_token;
-
   logger.info("[Blizzard] ", "Acquired new token");
-  return blizzardToken;
+  return response.access_token;
 }
 
 export async function getCharacterData(charName) {
