@@ -94,7 +94,7 @@ export async function getAllUpgrades() {
 export async function getUpgradesByNameAndItem(charName, itemID) {
   const db = await getDb();
 
-  return db.get(
+  return db.all(
     `SELECT upgrades.*, characters.*, simc.lastUpdated as simcLastModified
     FROM upgrades
     JOIN characters ON upgrades.characterID = characters.id

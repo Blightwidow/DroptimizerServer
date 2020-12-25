@@ -7,46 +7,98 @@ import * as raidbotsProvider from "../providers/raidbots.js";
 
 const raidbotQueue = new PQueue.default({ concurrency: 1 });
 
-function mapWeaponToToken(upgrade) {
-  const MAPPING = {
-    183892: [182422, 182418, 182424, 182417, 182419],
-    183897: [182392, 182396, 182398, 182391, 182393],
-    183893: [182421, 182415, 182422, 182418, 182416, 182420, 182423],
-    183896: [182395, 182389, 182392, 182396, 182390, 182394, 182397],
-    183888: [182425, 182426],
-    183895: [182399, 182400],
-    183891: [182417, 182422, 182421, 182415, 182418, 182416],
-    183898: [182391, 182396, 182395, 182389, 182392, 182390],
-    183889: [182425, 182426],
-    183894: [182399, 182400],
-    183890: [
-      182416,
-      182420,
-      182419,
-      182417,
-      182422,
-      182418,
-      182415,
-      182421,
-      182414,
-    ],
-    183899: [
-      182390,
-      182394,
-      182393,
-      182391,
-      182396,
-      182392,
-      182395,
-      182389,
-      182388,
-    ],
-  };
+function mapWeaponToToken(upgrade, user) {
+  const MAPPING = [
+    {
+      tokenId: 183892,
+      classes: [8, 3, 11],
+      itemIds: [182422, 182418, 182424, 182417, 182419],
+    },
+    {
+      tokenId: 183897,
+      classes: [8, 3, 11],
+      itemIds: [182392, 182396, 182398, 182391, 182393],
+    },
+    {
+      tokenId: 183893,
+      classes: [6, 9, 12],
+      itemIds: [182421, 182415, 182422, 182418, 182416, 182420, 182423],
+    },
+    {
+      tokenId: 183896,
+      classes: [6, 9, 12],
+      itemIds: [182395, 182389, 182392, 182396, 182390, 182394, 182397],
+    },
+    {
+      tokenId: 183888,
+      classes: [2, 10, 1, 5],
+      itemIds: [182425, 182426],
+    },
+    {
+      tokenId: 183895,
+      classes: [2, 10, 1, 5],
+      itemIds: [182399, 182400],
+    },
+    {
+      tokenId: 183891,
+      classes: [2, 5, 7],
+      itemIds: [182417, 182422, 182421, 182415, 182418, 182416],
+    },
+    {
+      tokenId: 183898,
+      classes: [2, 5, 7],
+      itemIds: [182391, 182396, 182395, 182389, 182392, 182390],
+    },
+    {
+      tokenId: 183889,
+      classes: [7, 8, 9, 11],
+      itemIds: [182425, 182426],
+    },
+    {
+      tokenId: 183894,
+      classes: [7, 8, 9, 11],
+      itemIds: [182399, 182400],
+    },
+    {
+      tokenId: 183890,
+      classes: [1, 4, 10],
+      itemIds: [
+        182416,
+        182420,
+        182419,
+        182417,
+        182422,
+        182418,
+        182415,
+        182421,
+        182414,
+      ],
+    },
+    {
+      tokenId: 183899,
+      classes: [1, 4, 10],
+      itemIds: [
+        182390,
+        182394,
+        182393,
+        182391,
+        182396,
+        182392,
+        182395,
+        182389,
+        182388,
+      ],
+    },
+  ];
   const nameParts = upgrade.name.split("/");
   const initialId = Number.parseInt(nameParts[3]);
 
-  const nextItemId = Object.entries(MAPPING).reduce(
-    (acc, [key, value]) => (value.includes(initialId) ? key : acc),
+  const nextItemId = MAPPING.reduce(
+    (acc, mappingElement) =>
+      mappingElement.itemIds.includes(initialId) &&
+      mappingElement.classes.includes(user.class)
+        ? mappingElement.tokenId
+        : acc,
     initialId
   );
 
@@ -115,7 +167,7 @@ async function updateSimReport(reportID) {
 
     await Promise.all(
       Object.values(upgrades)
-        .map(mapWeaponToToken)
+        .map((upgrade) => mapWeaponToToken(upgrade, user))
         .map((result) =>
           databaseProvider.upsertUpgrade(
             user.id,
