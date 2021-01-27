@@ -20,6 +20,6 @@ services:
       - RAIDBOTS_COOKIE=kajflkasejnf
       - RAIDBOTS_CFUID=kajflkasejnf
       - RAIDBOTS_STRIPEID=kajflkasejnf
-      - TIMEZONE=Australia/Sydney
+      - TZ=Australia/Sydney
       - CORS_ORIGIN=*
       - LOGGER_LEVEL=debug
