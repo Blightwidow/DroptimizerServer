@@ -1,4 +1,4 @@
-import cron from "node-cron";
+// import cron from "node-cron";
 
 import logger from "./logger.js";
 import { queueAllSims } from "./handlers/simulation.js";
@@ -12,24 +12,24 @@ export async function initData() {
   }
 }
 
-export function initCrons() {
-  // start new droptimizer sims at 5:00am every day
-  cron.schedule(
-    "0 5 * * *",
-    () => {
-      logger.warn("[CRON] ", "Running character sims");
+// export function initCrons() {
+//   // start new droptimizer sims at 5:00am every day
+//   cron.schedule(
+//     "0 5 * * *",
+//     () => {
+//       logger.warn("[CRON] ", "Running character sims");
 
-      queueAllSims();
-    },
-  );
+//       queueAllSims();
+//     },
+//   );
 
-  // update items at 4:00am every day
-  cron.schedule(
-    "0 0 1 * *",
-    () => {
-      logger.warn("[CRON] ", "Updating items");
+//   // update items at 4:00am every day
+//   cron.schedule(
+//     "0 0 1 * *",
+//     () => {
+//       logger.warn("[CRON] ", "Updating items");
 
-      updateItems();
-    },
-  );
-}
+//       updateItems();
+//     },
+//   );
+// }

@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import createHttpError from "http-errors";
 dotenv.config();
 
-import { initCrons, initData } from "./src/cron.js";
+import { initData } from "./src/cron.js";
 import { initDatabase } from "./src/database.js";
 import logger from "./src/logger.js";
 import characterRoutes from "./src/routes/v1/character.js";
@@ -20,7 +20,7 @@ import v2BossRoutes from "./src/routes/v2/boss.js";
 // App init
 initDatabase();
 initData();
-initCrons();
+// initCrons();
 const app = express();
 
 app.use(express.json());
